@@ -669,6 +669,9 @@ class SwipeActionCellState extends State<SwipeActionCell>
     //when close animation is running,ignore action button hit test
     ignoreActionButtonHit = true;
     _resetAnimValue();
+    if (widget.controller?.closeCallback != null) {
+      widget.controller?.closeCallback!();
+    }
     if (mounted) {
       animation =
           Tween<double>(begin: currentOffset.dx, end: 0.0).animate(curvedAnim)

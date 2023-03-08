@@ -23,6 +23,8 @@ class SwipeActionController {
 
   SelectedIndexPathsChangeCallback? selectedIndexPathsChangeCallback;
 
+  VoidCallback? closeCallback;
+
   /// edit mode or not
   ///获取是否正处于编辑模式
   final ValueNotifier<bool> isEditing = ValueNotifier<bool>(false);
