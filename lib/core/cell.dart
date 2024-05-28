@@ -84,6 +84,9 @@ class SwipeActionCell extends StatefulWidget {
   ///当选中cell的时候的一个前景蒙版颜色，默认为Colors.black.withAlpha(30)
   final Color? selectedForegroundColor;
 
+  ///左滑触发菜单动画的x值
+  final double? leftDragDx;
+
   const SwipeActionCell(
       {required Key key,
       required this.child,
@@ -107,7 +110,8 @@ class SwipeActionCell extends StatefulWidget {
       this.fullSwipeFactor = 0.75,
       this.deleteAnimationDuration = 400,
       this.normalAnimationDuration = 400,
-      this.selectedForegroundColor})
+      this.selectedForegroundColor,
+      this.leftDragDx})
       : super(key: key);
 
   ///About Key::::::
@@ -787,7 +791,8 @@ class SwipeActionCellState extends State<SwipeActionCell>
                       () => _DirectionDependentDragGestureRecognizer(
                           cellStateInfo: cellStateInfo,
                           canDragToLeft: hasTrailingAction,
-                          canDragToRight: hasLeadingAction), (instance) {
+                          canDragToRight: hasLeadingAction,
+                          leftDragDx: widget.leftDragDx), (instance) {
                 instance
                   ..onStart = _onHorizontalDragStart
                   ..onUpdate = _onHorizontalDragUpdate
@@ -1123,16 +1128,22 @@ class _DirectionDependentDragGestureRecognizer
   final bool canDragToRight;
   final _CellStateInfo cellStateInfo;
 
+  ///左滑触发菜单动画的x值
+  final double? leftDragDx;
+
   _DirectionDependentDragGestureRecognizer(
       {required this.cellStateInfo,
       required this.canDragToLeft,
-      required this.canDragToRight});
+      required this.canDragToRight,
+      this.leftDragDx});
 
   @override
   void handleEvent(PointerEvent event) {
     final delta = event.delta.dx;
     if (cellStateInfo.isActionShowing ||
-        canDragToLeft && delta < 0 ||
+        canDragToLeft &&
+            delta < 0 &&
+            (leftDragDx == null || event.position.dx >= leftDragDx!) ||
         canDragToRight && delta > 0 ||
         delta == 0) {
       super.handleEvent(event);
